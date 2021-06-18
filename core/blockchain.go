@@ -57,9 +57,11 @@ func (bc *Blockchain) validChain(chain []Block) bool {
 	for currentIndex < len(chain) {
 		block := chain[currentIndex]
 		if block.PreviousHash != lastBlock.Hash() {
+			log.Printf("Invalid hash %s, %s\n", block.PreviousHash, lastBlock.Hash())
 			return false
 		}
 		if !ValidProof(lastBlock.Proof, block.Proof, lastBlock.PreviousHash) {
+			log.Printf("Invalid proof %d, %d\n", lastBlock.Proof, block.Proof)
 			return false
 		}
 		lastBlock = block
@@ -73,18 +75,20 @@ func (bc *Blockchain) resolveConflicts() bool {
 	neighbours := bc.Nodes
 	maxLength := len(bc.Chain)
 	for _, node := range neighbours {
-		url := fmt.Sprintf("http://%s.chain", node)
+		url := fmt.Sprintf("http://%s/chain", node)
 		res, err := http.Get(url)
 		if err != nil {
 			log.Println(err)
-			return false
+			//return false
+			continue
 		}
 		defer res.Body.Close()
 		byteArr, _ := ioutil.ReadAll(res.Body)
 		var response chainResponse
 		if err = json.Unmarshal(byteArr, &response); err != nil {
 			log.Println(err)
-			return false
+			//return false
+			continue
 		}
 		length := response.Length
 		chain := response.Chain
@@ -95,8 +99,10 @@ func (bc *Blockchain) resolveConflicts() bool {
 	}
 	if len(newChain) > 0 {
 		bc.Chain = newChain
+		log.Printf("Successfully resolve %d\n", len(newChain))
 		return true
 	}
+	log.Printf("Successfully resolve %d without change\n", len(newChain))
 	return false
 
 }
@@ -131,6 +137,7 @@ func (bc *Blockchain) proofOfWork(lastBlock Block) uint64 {
 	for ValidProof(lastProof, proof, lastHash) == false {
 		proof++
 	}
+	log.Printf("Mined %d \n", proof)
 	return proof
 }
 

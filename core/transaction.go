@@ -10,3 +10,7 @@ type Transaction struct {
 	Recipient string `json:"recipient"`
 	Amount    uint64 `json:"amount"`
 }
+
+func (tx Transaction) Hash() string {
+	return ""
+}
