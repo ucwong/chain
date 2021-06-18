@@ -130,6 +130,8 @@ func (bc *Blockchain) newTransaction(sender, recipient string, amount uint64) ui
 		Recipient: recipient,
 		Amount:    amount,
 	}
+
+	//todo tx validation
 	bc.CurrentTransactions = append(bc.CurrentTransactions, transaction)
 	return bc.lastBlock().Index + 1
 }
