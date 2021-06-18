@@ -3,6 +3,7 @@ package core
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/ucwong/chain/common"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -24,7 +25,7 @@ func NewBlockchain() *Blockchain {
 	bc.CurrentTransactions = nil
 	bc.Chain = nil
 	bc.Nodes = nil
-	bc.newBlock(uint64(57531), Genesis())
+	bc.newBlock(uint64(57531), common.Genesis())
 	out, _ := exec.Command("uuidgen").Output()
 	bc.nodeIdentifier = strings.Replace(string(out), "-", "", -1)
 
@@ -61,7 +62,7 @@ func (bc *Blockchain) validChain(chain []Block) bool {
 			log.Printf("Invalid hash %s, %s\n", block.PreviousHash, lastBlock.Hash())
 			return false
 		}
-		if !ValidProof(lastBlock.Proof, block.Proof, lastBlock.Hash()) {
+		if !common.ValidProof(lastBlock.Proof, block.Proof, lastBlock.Hash()) {
 			log.Printf("Invalid proof %d, %d %s\n", lastBlock.Proof, block.Proof, lastBlock.PreviousHash)
 			return false
 		}
@@ -135,7 +136,7 @@ func (bc *Blockchain) proofOfWork(lastBlock Block) uint64 {
 	lastProof := lastBlock.Proof
 	lastHash := lastBlock.Hash()
 	proof := uint64(0)
-	for ValidProof(lastProof, proof, lastHash) == false {
+	for common.ValidProof(lastProof, proof, lastHash) == false {
 		proof++
 	}
 	log.Printf("Mined at parent:%d, diff:%d, parent:%s\n", lastProof, proof, lastHash)
