@@ -28,6 +28,8 @@ func NewBlockchain() *Blockchain {
 	out, _ := exec.Command("uuidgen").Output()
 	bc.nodeIdentifier = strings.Replace(string(out), "-", "", -1)
 
+	log.Println(bc.nodeIdentifier)
+
 	return bc
 }
 
