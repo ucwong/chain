@@ -20,14 +20,6 @@ func ValidProof(lastProof, proof uint64, lastHash string) bool {
 	guessBytes := sha256.Sum256([]byte(guess))
 	guessHash := hex.EncodeToString(guessBytes[:])
 
-	if guessHash[:4] == "0000" {
-		fmt.Println(lastProof)
-		fmt.Println(proof)
-		fmt.Println(lastHash)
-
-		fmt.Println(guessHash)
-		return true
-	}
-
-	return false
+	// constant diff
+	return guessHash[:4] == "0000"
 }

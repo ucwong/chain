@@ -25,6 +25,8 @@ func NewBlockchain() *Blockchain {
 	bc.CurrentTransactions = nil
 	bc.Chain = nil
 	bc.Nodes = nil
+
+	//TODO
 	bc.newBlock(uint64(57531), consensus.Genesis())
 	out, _ := exec.Command("uuidgen").Output()
 	bc.nodeIdentifier = strings.Replace(string(out), "-", "", -1)
