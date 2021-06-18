@@ -24,7 +24,7 @@ func NewBlockchain() *Blockchain {
 	bc.CurrentTransactions = nil
 	bc.Chain = nil
 	bc.Nodes = nil
-	bc.newBlock(uint64(21), Genesis())
+	bc.newBlock(uint64(57531), Genesis())
 	out, _ := exec.Command("uuidgen").Output()
 	bc.nodeIdentifier = strings.Replace(string(out), "-", "", -1)
 
@@ -52,6 +52,7 @@ func (bc *Blockchain) registerNode(address string) {
 }
 
 func (bc *Blockchain) validChain(chain []Block) bool {
+	log.Println(chain)
 	lastBlock := chain[0]
 	currentIndex := 1
 	for currentIndex < len(chain) {
@@ -60,8 +61,8 @@ func (bc *Blockchain) validChain(chain []Block) bool {
 			log.Printf("Invalid hash %s, %s\n", block.PreviousHash, lastBlock.Hash())
 			return false
 		}
-		if !ValidProof(lastBlock.Proof, block.Proof, lastBlock.PreviousHash) {
-			log.Printf("Invalid proof %d, %d\n", lastBlock.Proof, block.Proof)
+		if !ValidProof(lastBlock.Proof, block.Proof, lastBlock.Hash()) {
+			log.Printf("Invalid proof %d, %d %s\n", lastBlock.Proof, block.Proof, lastBlock.PreviousHash)
 			return false
 		}
 		lastBlock = block
@@ -137,7 +138,7 @@ func (bc *Blockchain) proofOfWork(lastBlock Block) uint64 {
 	for ValidProof(lastProof, proof, lastHash) == false {
 		proof++
 	}
-	log.Printf("Mined %d \n", proof)
+	log.Printf("Mined at parent:%d, diff:%d, parent:%s\n", lastProof, proof, lastHash)
 	return proof
 }
 
