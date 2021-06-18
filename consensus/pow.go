@@ -1,4 +1,4 @@
-package common
+package consensus
 
 import (
 	"crypto/sha256"
