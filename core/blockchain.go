@@ -55,26 +55,6 @@ func (bc *Blockchain) registerNode(address string) {
 	bc.Nodes = append(bc.Nodes, host)
 }
 
-func (bc *Blockchain) validChain(chain []types.Block) bool {
-	log.Println(chain)
-	lastBlock := chain[0]
-	currentIndex := 1
-	for currentIndex < len(chain) {
-		block := chain[currentIndex]
-		if block.PreviousHash != lastBlock.Hash() {
-			log.Printf("Invalid hash %s, %s\n", block.PreviousHash, lastBlock.Hash())
-			return false
-		}
-		if !consensus.ValidProof(lastBlock.Proof, block.Proof, lastBlock.Hash()) {
-			log.Printf("Invalid proof %d, %d %s\n", lastBlock.Proof, block.Proof, lastBlock.PreviousHash)
-			return false
-		}
-		lastBlock = block
-		currentIndex++
-	}
-	return true
-}
-
 func (bc *Blockchain) resolveConflicts() bool {
 	var newChain []types.Block
 	neighbours := bc.Nodes
@@ -97,7 +77,7 @@ func (bc *Blockchain) resolveConflicts() bool {
 		}
 		length := response.Length
 		chain := response.Chain
-		if length > maxLength && bc.validChain(chain) {
+		if length > maxLength && consensus.ValidChain(chain) {
 			maxLength = length
 			newChain = chain
 		}
