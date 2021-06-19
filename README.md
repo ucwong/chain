@@ -5,9 +5,9 @@ go run cmd/main.go
 ```
 ### Boot nodes
 ```
-$ go run blockchain.go -p 5001
-$ go run blockchain.go -p 5002
-$ go run blockchain.go -p 5003
+$ go run cmd/main.go -p 5001
+$ go run cmd/main.go -p 5002
+$ go run cmd/main.go -p 5003
 ```
 ### Chain info
 ```
