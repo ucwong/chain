@@ -19,7 +19,7 @@ $ curl -X POST -H "Content-Type: application/json" -d '{
 "nodes": ["http://localhost:5001","http://localhost:5002"]
 }' localhost:5000/nodes/register
 ```
-### New tx
+### New transaction
 ```
 $ curl -X POST -H "Content-Type: application/json" -d '{
 "sender": "96884cb7d98646128c25d03782a9e269",
