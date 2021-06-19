@@ -3,14 +3,15 @@ package core
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/ucwong/chain/core/types"
 	"log"
 	"net/http"
 	"strconv"
 )
 
 type chainResponse struct {
-	Length int     `json:"length"`
-	Chain  []Block `json:"chain"`
+	Length int           `json:"length"`
+	Chain  []types.Block `json:"chain"`
 }
 
 func (bc *Blockchain) MineHandler(w http.ResponseWriter, r *http.Request) {
@@ -22,7 +23,7 @@ func (bc *Blockchain) MineHandler(w http.ResponseWriter, r *http.Request) {
 	previousHash := lastBlock.Hash()
 	block := bc.newBlock(proof, previousHash)
 
-	mine := Mine{
+	mine := types.Mine{
 		Message:      "New Block Forged",
 		Index:        block.Index,
 		Transactions: block.Transactions,
@@ -68,8 +69,8 @@ func (bc *Blockchain) NewTransactionHandler(w http.ResponseWriter, r *http.Reque
 
 func (bc *Blockchain) ChainHandler(w http.ResponseWriter, r *http.Request) {
 	type response struct {
-		Chain  []Block `json:"chain"`
-		Length int     `json:"length"`
+		Chain  []types.Block `json:"chain"`
+		Length int           `json:"length"`
 	}
 	resChain := response{
 		Chain:  bc.Chain,
@@ -117,8 +118,8 @@ func (bc *Blockchain) NodesRegisterHandler(w http.ResponseWriter, r *http.Reques
 
 func (bc *Blockchain) NodesResolveHandler(w http.ResponseWriter, r *http.Request) {
 	type response struct {
-		Message string  `json:"message"`
-		Chain   []Block `json:"chain"`
+		Message string        `json:"message"`
+		Chain   []types.Block `json:"chain"`
 	}
 	var resNodesResolve response
 	replaced := bc.resolveConflicts()
